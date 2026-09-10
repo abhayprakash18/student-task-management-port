@@ -1,7 +1,9 @@
 import StatCard from "./StatCard";
 import TaskCard from "./TaskCard";
+import AddTask from "./AddTask";
+import { useState } from "react";
 function Dashboard(){
-    const tasks = [
+    const [tasks, setTasks] = useState([
         {
             id:1,
             title:"Learn React",description:"Understanding Components",status:"In Progress"
@@ -15,19 +17,41 @@ function Dashboard(){
         {
             id:3,
             title:"Deploy App",description:"Host the app on a platform",status:"Pending"
-        }];
+        }]);
+        function toggleTask(id){
+            setTasks(
+                tasks.map((task)=> {
+                    if(task.id === id){
+                        return {...task, status: task.status === "Completed" ? "Pending" : "Completed"};
+                    }
+                    return task;
+                })
+            );
+        }
+        function addTask(newTask){
+          setTasks([...tasks, newTask]);
+
+        }
+        function Description(newTask){
+            console.log("NewTask: ",newTask);
+        }
     return (
         <main>
+            <p>Count: {}</p>
+            <button onClick={()=>setTasks(tasks+1)}>Increase</button>
             <div className="stats-container">
                 <StatCard title={"Total Task"} value={"10"}/>
-                <StatCard title={"Completed"} value={"8"}/>
-                <StatCard title={"Pending"} value={"2"}/>
-                <StatCard title={"Name"} value={"Virat"} />
+                <StatCard title={"Completed Tasks"} value={"8"}/>
+                <StatCard title={"Pending Tasks"} value={"2"}/>
+                <StatCard title={"Time Taken"} value={"2hrs"}/>
+                <StatCard title={"Completed by"} value={"Virat"} />
             </div>
+            <AddTask  onAddTask={addTask}/>
+            <Description onAddTask={addTask}/>
             <h2>Recent Tasks</h2>
             <div className="tasks-container">
                 {tasks.map((task)=>(
-                    <TaskCard key={task.id} title={task.title} description={task.description} status={task.status}/>
+                    <TaskCard key={task.id} title={task.title} description={task.description} status={task.status} onToggle={()=>toggleTask(task.id)}/>
                 ))}
             </div>
             <div>
@@ -37,4 +61,6 @@ function Dashboard(){
     );
 }
 export default Dashboard;
+
+
 
