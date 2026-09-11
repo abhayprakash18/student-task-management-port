@@ -8,6 +8,7 @@ function TaskCard(props) {
                 change Status 
                 
             </button>
+            <button onClick={props.onDelete}>Delete Task</button>
         </div>
     );
 }

@@ -32,6 +32,9 @@ function Dashboard(){
           setTasks([...tasks, newTask]);
 
         }
+        function deleteTask(id){
+            setTasks(tasks.filter((task)=> task.id !== id));
+        }
         function Description(newTask){
             console.log("NewTask: ",newTask);
         }
@@ -51,7 +54,7 @@ function Dashboard(){
             <h2>Recent Tasks</h2>
             <div className="tasks-container">
                 {tasks.map((task)=>(
-                    <TaskCard key={task.id} title={task.title} description={task.description} status={task.status} onToggle={()=>toggleTask(task.id)}/>
+                    <TaskCard key={task.id} title={task.title} description={task.description} status={task.status} onToggle={()=>toggleTask(task.id)} onDelete={()=>deleteTask(task.id)}/>
                 ))}
             </div>
             <div>

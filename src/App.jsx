@@ -1,17 +1,20 @@
-import "./App.css";
+import './App.css';
 import Navbar from "./components/Navbar";
 import Welcome from "./components/Welcome";
 import Dashboard from "./components/Dashboard";
-
+import { Routes, Route } from 'react-router-dom';
+import Tasks from './components/Tasks';
 
 function App() {
   return (
     <div> 
-      <Navbar />
-      <Welcome /> 
-      <Dashboard />
-      
+      <Navbar />  
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/tasks" element={<Tasks />} />
+      </Routes>
     </div>
   );
+  
 }
 export default App;
