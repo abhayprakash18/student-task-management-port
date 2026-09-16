@@ -33,13 +33,8 @@ function Dashboard(props) {
             method: "DELETE"
         });
 
-        if(!response.ok){
-            throw new Error("Failed to delete task");
-        }
-
-        props.setTasks(
-            props.tasks.filter((task)=>task.id !==id)
-        );
+        const deletedTask = await response.json();
+        props.setTasks(props.tasks.filter((task) => task.id !== deletedTask.id));
     }
 
     return (
