@@ -1,72 +1,52 @@
-import StatCard from "./StatCard";
-import TaskCard from "./TaskCard";
-import AddTask from "./AddTask";
+import { useState } from "react";
 
-function Dashboard(props) {
-
-    async function toggleTask(id){
-        const task=props.tasks.find((task)=>task.id === id);
-        const newStatus = task.status === "Completed" ? "Pending" : "Completed";
-        const response=await fetch(`http://localhost:5050/api/tasks/${id}`,{
-            method: "PUT",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({status: newStatus})
-        });
-        const updatedTask = await response.json();
-        props.setTasks(
-            props.tasks.map((task) => {
-                if(task.id === id){
-                    return updatedTask;
-                    
-                }
-                return task;
-            })
-        );
-    }
-
-    function addTask(newTask){
-        props.setTasks([...props.tasks, newTask]);
-    }
-
-    async function deleteTask(id){
-        const response = await fetch(`http://localhost:5050/api/tasks/${id}`, {
-            method: "DELETE"
+function AddTask(props){
+    const [title, setTitle] = useState("");
+    const[description, setDescription] = useState("");
+    
+    async function handleSubmit(e){
+        e.preventDefault();
+        const newTask = {
+            id:Date.now(),
+            title: title,
+            description: description,
+            status: "Pending"
+        };
+        try{
+            const response = await fetch("http://localhost:5050/api/tasks", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify(newTask)
         });
 
-        const deletedTask = await response.json();
-        props.setTasks(props.tasks.filter((task) => task.id !== deletedTask.id));
+        const data = await response.json();
+        props.onAddTask(data);
+        }catch(error){
+            console.log(error);
+        }
     }
-
+    
     return (
-        <main>
-        
-            <div className="stats-container">
-                <StatCard title="Total Tasks" value="10"/>
-                <StatCard title="Completed" value="6"/>
-                <StatCard title="Pending" value="4"/>
-                
-            </div>
-
-            <AddTask  onAddTask={addTask}/>
-
-            <h2>Recent Tasks</h2>
-
-            <div className="tasks-container">
-                {props.tasks.map((task)=>(
-                    <TaskCard 
-                        key={task.id} 
-                        id ={task.id}
-                        title={task.title} 
-                        description={task.description} 
-                        status={task.status}
-                        onToggle={()=>toggleTask(task.id)} 
-                        onDelete={()=>deleteTask(task.id)}
-                    />
-                ))};
-            </div>
-
-        </main>
+        <div>
+            <h2>Add Task</h2>
+            <form onSubmit={handleSubmit}>
+                <label>Add Title: </label>
+                <input 
+                    type="text" 
+                    value={title}
+                    onChange={(e)=>setTitle(e.target.value)}
+                />
+                <br /><br />
+                <label>Add Description: </label>
+                <input 
+                    type="text" 
+                    value={description}
+                    onChange={(e)=>setDescription(e.target.value)}
+                />
+                <br /><br />
+                <button type="submit">Add Task!</button>
+            </form>
+        </div>
     );
 }
-
-export default Dashboard;
+export default AddTask;
